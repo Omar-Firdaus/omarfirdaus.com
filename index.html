@@ -12,49 +12,294 @@
     }
 
     body {
-      font-family: "Times New Roman", Times, serif;
-      background-color: #ffffff;
-      color: #000000;
+      --g: 8px;
+      --card-width: min(840px, 90vw);
+      background: #fff;
+      color: #2c2c2c;
+      overflow-x: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: inherit;
+    }
+
+    .gallery-section {
+      --g: 8px;
+      --gallery-filter: grayscale(100%);
+      width: 100%;
+      background: #fff;
+    }
+
+    .landing {
+      position: relative;
       min-height: 100vh;
+    }
+
+    .hero-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    main {
+    .hero-center {
+      pointer-events: auto;
+      width: var(--card-width);
+      max-width: calc(100vw - 2 * var(--g));
+    }
+
+    .content-card {
+      background: #faf9f6;
+      width: 100%;
+      padding: 1.6rem 2.4rem;
       text-align: center;
+      line-height: 1.5;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
-    h1 {
-      font-size: 2rem;
-      font-weight: normal;
-      letter-spacing: 0.15em;
-      margin-bottom: 2rem;
+    /* Uniform 16-row band — tiles pack tight, no white holes */
+    .span-p-sm { grid-column: span 12; grid-row: span 16; }
+    .span-p-md { grid-column: span 12; grid-row: span 16; }
+    .span-p-lg { grid-column: span 12; grid-row: span 16; }
+    .span-l-sm { grid-column: span 24; grid-row: span 16; }
+    .span-l-lg { grid-column: span 24; grid-row: span 16; }
+
+    .content-cell-sm {
+      grid-column: span 24;
+      grid-row: span 16;
     }
 
-    p {
-      font-size: 1.1rem;
-      line-height: 2;
+    .gallery-cell {
+      position: relative;
+      overflow: hidden;
+      line-height: 0;
     }
 
-    a {
-      color: #000000;
+    .gallery-media {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: var(--gallery-filter, none);
+      transition: filter 0.35s ease;
+    }
+
+    .gallery-cell:hover .gallery-media {
+      filter: none;
+    }
+
+    .content-cell {
+      line-height: 1.55;
+      overflow: hidden;
+    }
+
+    .gallery-grid {
+      --g: 8px;
+      display: grid;
+      grid-template-columns: repeat(96, 1fr);
+      grid-auto-rows: calc((100vw - 97 * var(--g)) / 96);
+      grid-auto-flow: dense;
+      gap: var(--g);
+      padding: var(--g);
+    }
+
+    .content-card-name {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      color: #111;
+      letter-spacing: 0.1em;
+      line-height: 1.2;
+      margin-bottom: 0.45rem;
+      text-transform: uppercase;
+    }
+
+    .content-card-tagline {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 0.65rem;
+    }
+
+    .content-card-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 0.82rem;
+      color: #444;
+      margin-bottom: 0.8rem;
+    }
+
+    .content-card-links a {
+      color: #555;
       text-decoration: underline;
+      text-decoration-color: rgba(0, 0, 0, 0.15);
+      text-underline-offset: 2px;
+      transition: color 0.15s ease;
     }
 
-    a:hover {
-      opacity: 0.6;
+    .content-card-links a:hover {
+      color: #111;
+    }
+
+    .content-card-ssh {
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      font-size: 0.78rem;
+      color: #666;
+      background: rgba(0, 0, 0, 0.04);
+      padding: 0.45rem 0.6rem;
+      display: inline-block;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      margin-bottom: 0.5rem;
+      word-break: break-all;
+    }
+
+    .content-card-email {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+    }
+
+    .content-card-email a {
+      color: #555;
+      text-decoration: underline;
+      text-decoration-color: rgba(0, 0, 0, 0.15);
+      text-underline-offset: 2px;
+      transition: color 0.15s ease;
+    }
+
+    .content-card-email a:hover {
+      color: #111;
+    }
+
+    @media (max-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(48, 1fr);
+        grid-auto-rows: calc((100vw - 49 * var(--g)) / 48);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: repeat(24, 1fr);
+        grid-auto-rows: calc((100vw - 25 * var(--g)) / 24);
+      }
+
+      .span-p-sm,
+      .span-p-md,
+      .span-p-lg {
+        grid-column: span 12;
+        grid-row: span 16;
+      }
+
+      .span-l-sm,
+      .span-l-lg {
+        grid-column: span 24;
+        grid-row: span 16;
+      }
+
+      .content-cell-sm {
+        grid-column: span 24;
+      }
+
+      .hero-center {
+        --card-width: calc(100vw - 2 * var(--g));
+        width: var(--card-width);
+      }
+
+      .content-card-name {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>OMAR FIRDAUS</h1>
-    <p>
-      Email me @ <a href="mailto:omar.firdaus101@gmail.com">omar.firdaus101@gmail.com</a><br>
-      I write here: <a href="https://medium.com/@omar.firdaus101" target="_blank" rel="noopener noreferrer">medium.com/@omar.firdaus101</a><br>
-      cool things here: <a href="https://github.com/Omar-Firdaus" target="_blank" rel="noopener noreferrer">github.com/Omar-Firdaus</a>
-    </p>
-  </main>
+  <div class="hero-layer">
+    <div class="hero-center" id="hero-card">
+      <div class="content-card">
+        <h1 class="content-card-name">Omar Firdaus</h1>
+        <p class="content-card-tagline">builder · writer</p>
+        <div class="content-card-links">
+          <span>I write here: <a href="https://medium.com/@omar.firdaus101" target="_blank" rel="noopener noreferrer">medium.com/@omar.firdaus101</a></span>
+          <span>cool things here: <a href="https://github.com/Omar-Firdaus" target="_blank" rel="noopener noreferrer">github.com/Omar-Firdaus</a></span>
+        </div>
+        <div class="content-card-ssh">$ ssh ssh.omarfirdaus.com</div>
+        <p class="content-card-email">
+          <a href="mailto:omar.firdaus101@gmail.com">omar.firdaus101@gmail.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="landing gallery-section">
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="gallery-cell span-p-sm"><img src="IMG_5280.JPG" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="IMG_3775.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="DSCN0894.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="IMG_5564.JPG" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="IMG_5193.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="Unitree.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="photos/IMG_0450.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="IMG_4786.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="photos/wel-polit.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="PICT0059.JPG" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="IMG_4946.JPG" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="IMG_4789.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="IMG_1463.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="FullSizeRender.jpg" alt="" class="gallery-media" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="7175231636158503780.JPEG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="Tezza-9606.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="IMG_9591.PNG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="DSCN0912.JPG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="photos/IMG_0434.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="photos/photo-candid.jpeg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="photos/IMG_2650.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-l-sm"><img src="D3ED16FD-E7F7-41E9-A7D2-23479A29C281.JPEG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+      <div class="gallery-cell span-p-sm"><img src="photos/IMG_4810.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
+    </div>
+  </section>
+
+  <script>
+    function layoutGrid(grid) {
+      if (!grid || !grid.children.length) return;
+
+      grid.style.height = '';
+      grid.style.overflow = '';
+
+      const cs = getComputedStyle(grid);
+      const cell = parseFloat(cs.gridTemplateColumns.split(' ')[0]);
+      const gap = parseFloat(cs.rowGap) || 0;
+      if (!cell) return;
+
+      grid.style.gridAutoRows = `${cell}px`;
+    }
+
+    function runLayout() {
+      layoutGrid(document.getElementById('gallery-grid'));
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(runLayout, 150);
+      setTimeout(runLayout, 1200);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(runLayout);
+      }
+    });
+
+    let raf = 0;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(runLayout);
+    });
+  </script>
 </body>
 </html>
