@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "title": "Optimizing Autonomous Navigation in FTC Robots with Markov Chains",
+    "link": "blog/ftc-markov-chains.html",
+    "pubDate": "2024-09-21",
+    "description": "Modeling FTC robot navigation as a Markov Chain to handle sensor noise, encoder drift, and slippage."
+  }
+]

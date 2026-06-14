@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimizing Autonomous Navigation in FTC Robots with Markov Chains · Omar Firdaus</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #faf9f6;
+      color: #2c2c2c;
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: #555;
+      text-decoration: underline;
+      text-decoration-color: rgba(0, 0, 0, 0.15);
+      text-underline-offset: 3px;
+    }
+
+    a:hover { color: #111; }
+
+    .site-header {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.85rem;
+    }
+
+    .site-header a {
+      color: #888;
+      text-decoration: none;
+    }
+
+    .site-header a:hover { color: #111; }
+
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .post-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 2rem;
+      color: #111;
+      margin-bottom: 0.35rem;
+      line-height: 1.25;
+    }
+
+    .post-meta {
+      font-size: 0.8rem;
+      color: #999;
+      margin-bottom: 2rem;
+    }
+
+    .post-hero {
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .post-hero img {
+      width: 100%;
+      display: block;
+    }
+
+    .post-body {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    .post-body p {
+      margin-bottom: 1rem;
+    }
+
+    .post-body h3 {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: #111;
+      margin: 1.75rem 0 0.75rem;
+    }
+
+    .post-body h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #222;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    .post-body ul {
+      margin: 0 0 1rem 1.25rem;
+    }
+
+    .post-body li {
+      margin-bottom: 0.35rem;
+    }
+
+    .post-body em {
+      font-style: italic;
+    }
+
+    .post-source {
+      margin-top: 2.5rem;
+      font-size: 0.82rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-header">
+    <a href="../index.html">Home</a>
+    <a href="../blog.html">Blog</a>
+  </nav>
+
+  <main class="page">
+    <h1 class="post-title">Optimizing Autonomous Navigation in FTC Robots with Markov Chains</h1>
+    <p class="post-meta">Sep 21, 2024 · 5 min read</p>
+
+    <figure class="post-hero">
+      <img src="https://cdn-images-1.medium.com/max/1024/1*9SiBCZFWYEuX2gZU-iEPVw.jpeg" alt="">
+    </figure>
+
+    <div class="post-body">
+      <h3>Introduction</h3>
+      <p>Navigation for robots relies on accurately tracking position, orientation, and path planning. However, in real-world scenarios like the FIRST Tech Challenge (FTC), sensor inaccuracies and environmental disturbances complicate precise navigation. A practical solution to these issues involves modeling navigation as a Markov Chain, which introduces probabilistic reasoning into the robot's movement decisions.</p>
+      <p>A Markov Chain models a system where the probability of transitioning to a new state depends solely on the current state. This characteristic makes Markov Chains valuable for managing the inherent uncertainties faced in FTC navigation, such as encoder drift, sensor noise, and slippage. This paper investigates how to incorporate Markov Chains into the navigation system of an FTC robot to improve its performance in an uncertain environment.</p>
+
+      <h3>Background</h3>
+      <p>A Markov Chain is a stochastic model that predicts future system states based on the current state, without dependence on previous states. Mathematically, it is expressed as a sequence of random variables X<sub>1</sub>, X<sub>2</sub>, X<sub>3</sub>, ..., with a state transition governed by the probabilities of moving from one state to another.</p>
+      <p>The following key concepts define a Markov Chain:</p>
+      <ul>
+        <li><strong>States:</strong> Discrete possible configurations of the system.</li>
+        <li><strong>Transition Probabilities:</strong> Likelihood of moving from one state to another.</li>
+        <li><strong>Markov Property:</strong> The future state depends only on the present state, not the sequence of prior states.</li>
+      </ul>
+      <p>In FTC robotics, the states represent the robot's positions on a grid, and the transition probabilities model the likelihood of moving to adjacent grid positions.</p>
+
+      <h3>Navigation in FTC Robotics</h3>
+      <p>FTC robots typically use sensors such as encoders, gyroscopes, and distance sensors to guide their navigation. However, inaccuracies in these sensors can lead to faulty readings, resulting in unreliable navigation. For example:</p>
+      <ul>
+        <li><strong>Encoder Drift:</strong> Errors accumulate as the robot moves over time.</li>
+        <li><strong>Gyroscope Inaccuracies:</strong> Turning the robot may introduce slight deviations in the orientation.</li>
+        <li><strong>Sensor Noise:</strong> Distance sensors often return fluctuating readings due to external factors.</li>
+      </ul>
+      <p>These challenges can be mitigated by using a probabilistic approach, such as Markov Chains, to represent and update the robot's belief about its position and movement on the field.</p>
+
+      <h3>Implementation of Markov Chains in FTC Robots</h3>
+
+      <h4>State Representation</h4>
+      <p>To implement a Markov Chain in navigation, the robot's environment needs to be divided into discrete states. For an FTC robot, these states could correspond to specific coordinates on the game field, typically a grid. Each state represents a possible position of the robot on the field.</p>
+      <p>For example, if the robot is navigating a 12x12 field grid, each square on the grid could be a state, denoted by a pair (x, y). The robot's state changes as it moves from one square to another.</p>
+
+      <h4>Transition Matrix</h4>
+      <p>The transition probabilities between different states are represented in a transition matrix. Each element P(i, j) in the matrix represents the probability of the robot moving from state i to state j. These probabilities can be learned from experimental data or derived from sensor readings.</p>
+      <p>For example, if the robot typically moves forward but occasionally slips sideways, the transition probabilities can reflect this by assigning a high probability to forward motion and smaller probabilities to lateral slippage:</p>
+      <ul>
+        <li>P(forward) = 0.8</li>
+        <li>P(left slip) = 0.1</li>
+        <li>P(right slip) = 0.1</li>
+      </ul>
+
+      <h4>Sensor Input Integration</h4>
+      <p>As the robot moves and receives sensor inputs, it can update the probabilities in real-time. The FTC robot can use its sensors (such as encoders, gyroscopes, or distance sensors) to adjust the probabilities of transitioning to neighboring states. For instance, if the robot's encoders report forward motion but the distance sensor detects an obstacle, the transition probability for moving forward may be reduced, and lateral movement may be preferred.</p>
+
+      <h4>Path Prediction and Updating</h4>
+      <p>With each action, the robot updates its belief about its position using the Markov Chain model. Based on the current state and sensor readings, the robot calculates the most likely next state using the transition matrix. This process repeats, allowing the robot to adjust its navigation path dynamically.</p>
+      <ul>
+        <li><strong>Belief Update:</strong> After each step, the robot updates its belief about its location using sensor data and transition probabilities. If a state becomes less likely (due to a sensor mismatch), the robot shifts its belief to adjacent states that are more probable.</li>
+      </ul>
+      <p>This probabilistic model enables the robot to correct for errors in navigation, such as when it drifts from its intended path or encounters an unexpected obstacle.</p>
+
+      <h3>Simulation and Testing</h3>
+      <p>Testing the Markov Chain navigation algorithm can be conducted through simulations before implementing it on a physical robot. Simulators such as the FTC Robot Controller Simulator can help visualize how the robot moves on a field grid based on the transition matrix.</p>
+      <p>Once the model is refined in simulation, it can be integrated into the robot's autonomous navigation code. Testing on the actual FTC field with real-world factors (such as uneven terrain or lighting changes) will provide insight into how well the Markov Chain model handles unexpected conditions.</p>
+
+      <h3>Advantages of Markov Chains in FTC Robotics</h3>
+      <ul>
+        <li><strong>Error Tolerance:</strong> The use of probabilistic transitions allows the robot to better handle sensor inaccuracies and unexpected movements.</li>
+        <li><strong>Adaptive Navigation:</strong> The robot can adjust its path dynamically based on updated probabilities from real-time sensor inputs.</li>
+        <li><strong>Scalability:</strong> Markov Chains can easily scale with increasing field complexity or the addition of more sensors.</li>
+      </ul>
+
+      <h3>Limitations and Challenges</h3>
+      <ul>
+        <li><strong>Complexity:</strong> Implementing Markov Chains can be computationally expensive, especially for large grids or complex environments. Efficient algorithms are required to ensure real-time performance.</li>
+        <li><strong>Transition Matrix Accuracy:</strong> Creating an accurate transition matrix depends on high-quality sensor data and real-world testing. If the matrix is inaccurate, navigation performance may degrade.</li>
+      </ul>
+
+      <h3>Conclusion</h3>
+      <p>Markov Chains offer a powerful method for enhancing the navigation capabilities of FTC robots by incorporating probabilistic reasoning into movement decisions. This approach allows robots to navigate more effectively in uncertain environments, accounting for sensor noise, slippage, and unexpected obstacles. By modeling navigation as a probabilistic process, robots can better estimate their position and make informed decisions about their movement, leading to more reliable performance during competitions.</p>
+      <p>As FTC competitions continue to evolve and present increasingly complex challenges, leveraging techniques like Markov Chains could provide a significant edge in robot performance. The ability to dynamically adjust navigation paths based on real-time sensor data not only improves accuracy but also enhances the robot's adaptability in diverse environments.</p>
+      <p>Furthermore, the integration of advanced machine learning techniques, such as reinforcement learning, with Markov Chains represents an exciting avenue for future research. This combination could enable robots to learn optimal navigation strategies over time, refining their decision-making processes and improving their performance based on past experiences.</p>
+      <p>In summary, adopting a probabilistic approach to navigation through Markov Chains equips FTC robots with the necessary tools to thrive in competitive settings, fostering innovation and pushing the boundaries of robotic capabilities. As we explore these methodologies further, we can anticipate even more sophisticated autonomous systems capable of tackling complex tasks with greater efficiency and reliability.</p>
+
+      <h3>References</h3>
+      <ul>
+        <li>Thrun, S., Burgard, W., &amp; Fox, D. (2005). <em>Probabilistic Robotics</em>. MIT Press.</li>
+        <li>Russell, S., &amp; Norvig, P. (2010). <em>Artificial Intelligence: A Modern Approach</em>. Prentice Hall.</li>
+        <li>Leung, C. W. (2004). Markov Decision Processes for Mobile Robot Path Planning. <em>IEEE Transactions on Systems, Man, and Cybernetics</em>.</li>
+      </ul>
+
+      <p class="post-source">Originally published on <a href="https://medium.com/@omar.firdaus101/optimizing-autonomous-navigation-in-ftc-robots-with-markov-chains-291babccf487" target="_blank" rel="noopener noreferrer">Medium</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

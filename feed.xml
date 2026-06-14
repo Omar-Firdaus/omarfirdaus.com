@@ -5,8 +5,14 @@
     <link>https://omarfirdaus.com/blog.html</link>
     <description>build cool hardware</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Jun 2026 00:35:31 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 21 Sep 2024 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://omarfirdaus.com/feed.xml" rel="self" type="application/rss+xml"/>
-
+    <item>
+      <title>Optimizing Autonomous Navigation in FTC Robots with Markov Chains</title>
+      <link>https://omarfirdaus.com/blog/ftc-markov-chains.html</link>
+      <guid isPermaLink="true">https://omarfirdaus.com/blog/ftc-markov-chains.html</guid>
+      <pubDate>Sat, 21 Sep 2024 00:00:00 GMT</pubDate>
+      <description>Modeling FTC robot navigation as a Markov Chain to handle sensor noise, encoder drift, and slippage.</description>
+    </item>
   </channel>
 </rss>
