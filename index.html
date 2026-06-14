@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Omar Firdaus</title>
+  <link rel="alternate" type="application/rss+xml" title="Omar Firdaus" href="feed.xml">
   <style>
     * {
       margin: 0;
@@ -13,12 +14,14 @@
 
     body {
       --g: 8px;
-      --card-width: min(840px, 90vw);
-      background: #fff;
+      --card-width: min(420px, 88vw);
+      --gallery-filter: grayscale(100%);
+      background: #111;
       color: #2c2c2c;
-      overflow-x: hidden;
+      overflow: hidden;
+      height: 100vh;
       font-family: system-ui, -apple-system, sans-serif;
-      line-height: 1.7;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -27,16 +30,53 @@
       text-decoration: inherit;
     }
 
+    .landing {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
     .gallery-section {
-      --g: 8px;
-      --gallery-filter: grayscale(100%);
       width: 100%;
+      height: 100%;
       background: #fff;
     }
 
-    .landing {
+    .gallery-grid {
+      --g: 8px;
+      display: grid;
+      grid-template-columns: repeat(96, 1fr);
+      grid-auto-rows: calc((100vw - 97 * var(--g)) / 96);
+      grid-auto-flow: dense;
+      gap: var(--g);
+      padding: var(--g);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .span-p-sm { grid-column: span 12; grid-row: span 16; }
+    .span-p-md { grid-column: span 12; grid-row: span 16; }
+    .span-l-sm { grid-column: span 24; grid-row: span 16; }
+    .span-l-lg { grid-column: span 24; grid-row: span 16; }
+
+    .gallery-cell {
       position: relative;
-      min-height: 100vh;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .gallery-media {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: var(--gallery-filter, none);
+      transition: filter 0.35s ease;
+    }
+
+    .gallery-cell:hover .gallery-media {
+      filter: none;
     }
 
     .hero-layer {
@@ -58,97 +98,55 @@
     .content-card {
       background: #faf9f6;
       width: 100%;
-      padding: 1.6rem 2.4rem;
+      padding: 1.1rem 1.25rem 1.15rem;
       text-align: center;
-      line-height: 1.5;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Uniform 16-row band — tiles pack tight, no white holes */
-    .span-p-sm { grid-column: span 12; grid-row: span 16; }
-    .span-p-md { grid-column: span 12; grid-row: span 16; }
-    .span-p-lg { grid-column: span 12; grid-row: span 16; }
-    .span-l-sm { grid-column: span 24; grid-row: span 16; }
-    .span-l-lg { grid-column: span 24; grid-row: span 16; }
-
-    .content-cell-sm {
-      grid-column: span 24;
-      grid-row: span 16;
-    }
-
-    .gallery-cell {
-      position: relative;
-      overflow: hidden;
-      line-height: 0;
-    }
-
-    .gallery-media {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      filter: var(--gallery-filter, none);
-      transition: filter 0.35s ease;
-    }
-
-    .gallery-cell:hover .gallery-media {
-      filter: none;
-    }
-
-    .content-cell {
       line-height: 1.55;
-      overflow: hidden;
-    }
-
-    .gallery-grid {
-      --g: 8px;
-      display: grid;
-      grid-template-columns: repeat(96, 1fr);
-      grid-auto-rows: calc((100vw - 97 * var(--g)) / 96);
-      grid-auto-flow: dense;
-      gap: var(--g);
-      padding: var(--g);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .content-card-name {
       font-family: "Times New Roman", Times, serif;
-      font-size: 1.7rem;
+      font-size: 1.45rem;
       font-weight: 400;
       color: #111;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.06em;
       line-height: 1.2;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.3rem;
       text-transform: uppercase;
     }
 
     .content-card-tagline {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 0.9rem;
-      color: #888;
-      margin-bottom: 0.65rem;
-    }
-
-    .content-card-links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      font-family: "Times New Roman", Times, serif;
+      font-family: system-ui, -apple-system, sans-serif;
       font-size: 0.82rem;
-      color: #444;
-      margin-bottom: 0.8rem;
+      color: #888;
+      margin-bottom: 0.5rem;
     }
 
-    .content-card-links a {
-      color: #555;
-      text-decoration: underline;
-      text-decoration-color: rgba(0, 0, 0, 0.15);
-      text-underline-offset: 2px;
+    .content-card-socials {
+      display: flex;
+      justify-content: center;
+      gap: 0.55rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .content-card-social {
+      color: #aaa;
+      display: flex;
+      text-decoration: none;
       transition: color 0.15s ease;
     }
 
-    .content-card-links a:hover {
-      color: #111;
+    .content-card-social:hover {
+      color: #333;
+    }
+
+    .content-card-social svg {
+      width: 16px;
+      height: 16px;
     }
 
     .content-card-ssh {
@@ -156,29 +154,49 @@
       font-size: 0.78rem;
       color: #666;
       background: rgba(0, 0, 0, 0.04);
-      padding: 0.45rem 0.6rem;
+      padding: 0.4rem 0.65rem;
       display: inline-block;
       border: 1px solid rgba(0, 0, 0, 0.06);
-      margin-bottom: 0.5rem;
-      word-break: break-all;
+      margin-bottom: 0.65rem;
     }
 
-    .content-card-email {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 0.8rem;
-      margin-top: 0.35rem;
+    .content-card-footer {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.78rem;
+      color: #999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    .content-card-email a {
-      color: #555;
-      text-decoration: underline;
-      text-decoration-color: rgba(0, 0, 0, 0.15);
-      text-underline-offset: 2px;
+    .content-card-footer a {
+      color: #888;
+      text-decoration: none;
       transition: color 0.15s ease;
     }
 
-    .content-card-email a:hover {
-      color: #111;
+    .content-card-footer a:hover {
+      color: #333;
+      text-decoration: underline;
+      text-decoration-color: rgba(0, 0, 0, 0.2);
+      text-underline-offset: 3px;
+    }
+
+    .content-card-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.72rem;
+      color: #aaa;
+      letter-spacing: 0.02em;
+    }
+
+    .content-card-nav .sep {
+      color: #d4d4d4;
+      user-select: none;
     }
 
     @media (max-width: 1024px) {
@@ -195,8 +213,7 @@
       }
 
       .span-p-sm,
-      .span-p-md,
-      .span-p-lg {
+      .span-p-md {
         grid-column: span 12;
         grid-row: span 16;
       }
@@ -207,98 +224,172 @@
         grid-row: span 16;
       }
 
-      .content-cell-sm {
-        grid-column: span 24;
-      }
-
-      .hero-center {
-        --card-width: calc(100vw - 2 * var(--g));
-        width: var(--card-width);
+      .content-card {
+        padding: 1rem 1.1rem;
       }
 
       .content-card-name {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gallery-media {
+        transition: none;
       }
     }
   </style>
 </head>
 <body>
   <div class="hero-layer">
-    <div class="hero-center" id="hero-card">
+    <div class="hero-center">
       <div class="content-card">
         <h1 class="content-card-name">Omar Firdaus</h1>
-        <p class="content-card-tagline">builder · writer</p>
-        <div class="content-card-links">
-          <span>I write here: <a href="https://medium.com/@omar.firdaus101" target="_blank" rel="noopener noreferrer">medium.com/@omar.firdaus101</a></span>
-          <span>cool things here: <a href="https://github.com/Omar-Firdaus" target="_blank" rel="noopener noreferrer">github.com/Omar-Firdaus</a></span>
+        <p class="content-card-tagline">build cool hardware</p>
+        <div class="content-card-socials">
+          <a class="content-card-social" href="https://github.com/Omar-Firdaus" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a class="content-card-social" href="https://www.linkedin.com/in/omarfirdaus/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 114.126 0 2.063 2.063 0 01-2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a class="content-card-social" href="https://x.com/omarfirdaus101" target="_blank" rel="noopener noreferrer" aria-label="X">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a class="content-card-social" href="https://medium.com/@omar.firdaus101" target="_blank" rel="noopener noreferrer" aria-label="Medium">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+          </a>
         </div>
         <div class="content-card-ssh">$ ssh ssh.omarfirdaus.com</div>
-        <p class="content-card-email">
+        <p class="content-card-footer">
           <a href="mailto:omar.firdaus101@gmail.com">omar.firdaus101@gmail.com</a>
+          <span class="content-card-nav">
+            <a href="blog.html">blog</a>
+            <span class="sep">|</span>
+            <a href="publications.html">publications</a>
+            <span class="sep">|</span>
+            <a href="feed.xml">RSS feed</a>
+            <span class="sep">|</span>
+            <a href="bio.html">bio</a>
+          </span>
         </p>
       </div>
     </div>
   </div>
 
-  <section class="landing gallery-section">
-    <div class="gallery-grid" id="gallery-grid">
-      <div class="gallery-cell span-p-sm"><img src="IMG_5280.JPG" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="IMG_3775.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="DSCN0894.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="IMG_5564.JPG" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="IMG_5193.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="Unitree.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="photos/IMG_0450.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="IMG_4786.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="photos/wel-polit.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="PICT0059.JPG" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="IMG_4946.JPG" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="IMG_4789.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="IMG_1463.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="FullSizeRender.jpg" alt="" class="gallery-media" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="7175231636158503780.JPEG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="Tezza-9606.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="IMG_9591.PNG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="DSCN0912.JPG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="photos/IMG_0434.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="photos/photo-candid.jpeg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="photos/IMG_2650.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-l-sm"><img src="D3ED16FD-E7F7-41E9-A7D2-23479A29C281.JPEG" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-      <div class="gallery-cell span-p-sm"><img src="photos/IMG_4810.jpg" alt="" class="gallery-media" loading="lazy" decoding="async"></div>
-    </div>
-  </section>
+  <div class="landing">
+    <section class="gallery-section">
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+  </div>
 
   <script>
-    function layoutGrid(grid) {
+    const PHOTOS = [
+      { src: "IMG_5280.JPG", span: "l-sm" },
+      { src: "IMG_3775.jpg", span: "p-sm" },
+      { src: "DSCN0894.jpg", span: "p-sm" },
+      { src: "IMG_5564.JPG", span: "p-sm" },
+      { src: "IMG_5193.jpg", span: "l-sm" },
+      { src: "Unitree.jpg", span: "p-sm" },
+      { src: "photos/IMG_0450.jpg", span: "p-sm" },
+      { src: "IMG_4786.jpg", span: "l-sm" },
+      { src: "photos/wel-polit.jpg", span: "p-sm" },
+      { src: "PICT0059.JPG", span: "p-sm" },
+      { src: "IMG_4946.JPG", span: "p-sm" },
+      { src: "IMG_4789.jpg", span: "l-sm" },
+      { src: "IMG_1463.jpg", span: "p-sm" },
+      { src: "FullSizeRender.jpg", span: "l-sm" },
+      { src: "7175231636158503780.JPEG", span: "p-sm" },
+      { src: "Tezza-9606.jpg", span: "l-sm" },
+      { src: "IMG_9591.PNG", span: "p-sm" },
+      { src: "DSCN0912.JPG", span: "p-sm" },
+      { src: "photos/IMG_0434.jpg", span: "l-sm" },
+      { src: "photos/photo-candid.jpeg", span: "l-sm" },
+      { src: "photos/IMG_2650.jpg", span: "p-sm" },
+      { src: "D3ED16FD-E7F7-41E9-A7D2-23479A29C281.JPEG", span: "l-sm" },
+      { src: "photos/IMG_4810.jpg", span: "p-sm" },
+    ];
+
+    const SPANS = ["p-sm", "p-md", "l-sm", "l-lg"];
+
+    function buildGallery() {
+      const grid = document.getElementById("gallery-grid");
+      grid.innerHTML = "";
+
+      const tiles = [];
+      for (let round = 0; round < 4; round += 1) {
+        for (let i = 0; i < PHOTOS.length; i += 1) {
+          const photo = PHOTOS[i];
+          const span = round === 0 ? photo.span : SPANS[(i + round) % SPANS.length];
+          tiles.push({ src: photo.src, span });
+        }
+      }
+
+      for (const tile of tiles) {
+        const cell = document.createElement("div");
+        cell.className = `gallery-cell span-${tile.span}`;
+        const img = document.createElement("img");
+        img.src = tile.src;
+        img.alt = "";
+        img.className = "gallery-media";
+        img.decoding = "async";
+        img.loading = "lazy";
+        cell.appendChild(img);
+        grid.appendChild(cell);
+      }
+    }
+
+    function layoutGrid() {
+      const grid = document.getElementById("gallery-grid");
       if (!grid || !grid.children.length) return;
 
-      grid.style.height = '';
-      grid.style.overflow = '';
-
       const cs = getComputedStyle(grid);
-      const cell = parseFloat(cs.gridTemplateColumns.split(' ')[0]);
+      const cell = parseFloat(cs.gridTemplateColumns.split(" ")[0]);
       const gap = parseFloat(cs.rowGap) || 0;
       if (!cell) return;
 
       grid.style.gridAutoRows = `${cell}px`;
-    }
 
-    function runLayout() {
-      layoutGrid(document.getElementById('gallery-grid'));
-    }
-
-    window.addEventListener('load', () => {
-      setTimeout(runLayout, 150);
-      setTimeout(runLayout, 1200);
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(runLayout);
+      const viewportRows = Math.ceil((window.innerHeight - gap * 2 + gap) / (cell + gap));
+      const minTiles = viewportRows * 8;
+      while (grid.children.length < minTiles) {
+        const photo = PHOTOS[grid.children.length % PHOTOS.length];
+        const span = SPANS[grid.children.length % SPANS.length];
+        const cellEl = document.createElement("div");
+        cellEl.className = `gallery-cell span-${span}`;
+        const img = document.createElement("img");
+        img.src = photo.src;
+        img.alt = "";
+        img.className = "gallery-media";
+        img.decoding = "async";
+        img.loading = "lazy";
+        cellEl.appendChild(img);
+        grid.appendChild(cellEl);
       }
+
+      const top = grid.getBoundingClientRect().top;
+      let maxBottom = 0;
+      for (const item of grid.children) {
+        const bottom = item.getBoundingClientRect().bottom - top;
+        if (bottom > maxBottom) maxBottom = bottom;
+      }
+
+      const pitch = cell + gap;
+      const rows = Math.ceil((window.innerHeight - gap * 2 + gap) / pitch);
+      const snapped = rows * pitch - gap;
+      grid.style.height = `${Math.max(snapped, maxBottom)}px`;
+    }
+
+    buildGallery();
+    window.addEventListener("load", () => {
+      setTimeout(layoutGrid, 100);
+      setTimeout(layoutGrid, 800);
     });
 
     let raf = 0;
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(runLayout);
+      raf = requestAnimationFrame(layoutGrid);
     });
   </script>
 </body>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Omar Firdaus</title>
+    <link>https://omarfirdaus.com/blog.html</link>
+    <description>build cool hardware</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Jun 2026 00:35:31 GMT</lastBuildDate>
+    <atom:link href="https://omarfirdaus.com/feed.xml" rel="self" type="application/rss+xml"/>
+
+  </channel>
+</rss>

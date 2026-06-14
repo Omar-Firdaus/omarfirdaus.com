@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog · Omar Firdaus</title>
+  <link rel="alternate" type="application/rss+xml" title="Omar Firdaus" href="feed.xml">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #faf9f6;
+      color: #2c2c2c;
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: #555;
+      text-decoration: underline;
+      text-decoration-color: rgba(0, 0, 0, 0.15);
+      text-underline-offset: 3px;
+      transition: color 0.15s ease;
+    }
+
+    a:hover {
+      color: #111;
+    }
+
+    .site-header {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.85rem;
+    }
+
+    .site-header a {
+      color: #888;
+      text-decoration: none;
+    }
+
+    .site-header a:hover {
+      color: #111;
+    }
+
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .page-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: #111;
+      margin-bottom: 2rem;
+    }
+
+    .post-list {
+      list-style: none;
+    }
+
+    .post-item {
+      margin-bottom: 1.75rem;
+    }
+
+    .post-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: #111;
+      margin-bottom: 0.2rem;
+    }
+
+    .post-title a {
+      color: #111;
+      text-decoration: none;
+    }
+
+    .post-title a:hover {
+      text-decoration: underline;
+    }
+
+    .post-date {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .empty {
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-header">
+    <a href="index.html">Home</a>
+    <a href="blog.html">Blog</a>
+  </nav>
+
+  <main class="page">
+    <h1 class="page-title">Writing</h1>
+    <ul class="post-list" id="post-list"></ul>
+    <p class="empty"><a href="feed.xml">Subscribe via RSS</a></p>
+  </main>
+
+  <script>
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+
+    fetch("posts.json")
+      .then((response) => response.json())
+      .then((posts) => {
+        const list = document.getElementById("post-list");
+
+        if (!posts.length) {
+          list.innerHTML = '<li class="post-item"><p class="empty">No posts yet.</p></li>';
+          return;
+        }
+
+        const sorted = [...posts].sort(
+          (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
+        );
+
+        list.innerHTML = sorted
+          .map(
+            (post) => `
+              <li class="post-item">
+                <h2 class="post-title">
+                  <a href="${post.link}">${post.title}</a>
+                </h2>
+                <p class="post-date">${formatDate(post.pubDate)}</p>
+              </li>
+            `
+          )
+          .join("");
+      })
+      .catch(() => {
+        document.getElementById("post-list").innerHTML =
+          '<li class="post-item"><p class="empty">Could not load posts.</p></li>';
+      });
+  </script>
+</body>
+</html>
