@@ -18,8 +18,7 @@
       --gallery-filter: grayscale(100%);
       background: #111;
       color: #2c2c2c;
-      overflow: hidden;
-      height: 100vh;
+      overflow-x: hidden;
       font-family: system-ui, -apple-system, sans-serif;
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
@@ -32,14 +31,11 @@
 
     .landing {
       position: relative;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
+      width: 100%;
     }
 
     .gallery-section {
       width: 100%;
-      height: 100%;
       background: #fff;
     }
 
@@ -51,8 +47,6 @@
       grid-auto-flow: dense;
       gap: var(--g);
       padding: var(--g);
-      height: 100%;
-      overflow: hidden;
     }
 
     .span-p-sm { grid-column: span 12; grid-row: span 16; }
@@ -317,7 +311,7 @@
       grid.innerHTML = "";
 
       const tiles = [];
-      for (let round = 0; round < 4; round += 1) {
+      for (let round = 0; round < 8; round += 1) {
         for (let i = 0; i < PHOTOS.length; i += 1) {
           const photo = PHOTOS[i];
           const span = round === 0 ? photo.span : SPANS[(i + round) % SPANS.length];
@@ -350,23 +344,6 @@
 
       grid.style.gridAutoRows = `${cell}px`;
 
-      const viewportRows = Math.ceil((window.innerHeight - gap * 2 + gap) / (cell + gap));
-      const minTiles = viewportRows * 8;
-      while (grid.children.length < minTiles) {
-        const photo = PHOTOS[grid.children.length % PHOTOS.length];
-        const span = SPANS[grid.children.length % SPANS.length];
-        const cellEl = document.createElement("div");
-        cellEl.className = `gallery-cell span-${span}`;
-        const img = document.createElement("img");
-        img.src = photo.src;
-        img.alt = "";
-        img.className = "gallery-media";
-        img.decoding = "async";
-        img.loading = "lazy";
-        cellEl.appendChild(img);
-        grid.appendChild(cellEl);
-      }
-
       const top = grid.getBoundingClientRect().top;
       let maxBottom = 0;
       for (const item of grid.children) {
@@ -374,10 +351,7 @@
         if (bottom > maxBottom) maxBottom = bottom;
       }
 
-      const pitch = cell + gap;
-      const rows = Math.ceil((window.innerHeight - gap * 2 + gap) / pitch);
-      const snapped = rows * pitch - gap;
-      grid.style.height = `${Math.max(snapped, maxBottom)}px`;
+      grid.style.height = `${maxBottom}px`;
     }
 
     buildGallery();
